@@ -1,0 +1,59 @@
+Dev:
+  ☐ more efficient rebuild, faster
+  ☐ algorithmic character generation system
+
+
+First Person combat system
+☐ you move them around with a cursor, and you do an arc attack at length from body,
+  ☐ if shield is up then blocks damage
+  ☐ you set the ai logic of the fighter before the fight starts
+  ☐ many different attack types and defence types, unlockables
+
+
+
+game play
+
+
+Todo:
+ 
+
+
+Gameplay:
+
+
+    - 
+
+
+  ☐ meeting new players
+    - when you meet them you want to give a good impression or do the right thing by your characters traits.
+    - giving eachother the benefit of the doubt gets them more access to info, money and opportunities
+    - players should test their allies to see if they find out anything and build suspicion 
+      ~ how they act around others
+      ~ how they respond to certain stimuli
+    - if you do have a lot in common then you should work on your bond and promotoe your virtue, trade for wealth, mary for uniting houses, 
+
+
+    
+  ☐ stories are done in reverse, where theres the ending, and then the alternate possible endings, and then the track that goes there, and all the key sub events that influenced it. either the bad guys pull off the small chance evil master plan. or the good guys band together and stop him
+
+
+
+  ☐ when bad guy goes to win -> 
+    - if guy group is there
+      ~ if the good guys are strong enough, then carry out plan
+        * plan is, look for clues and pause, 
+          - if no threat send army in
+          - if threat then *intercept* put the game into turn based mode where player has time to make a decission
+          - send in army if no traps detected
+
+
+  ☐ super basic version
+    - in a game bad guy builds up about 60 points
+    - if good guys intercept with 3 allies, then they make 50 points and not be able to stop the bad guy, but if they intervene with 4 allies, then they will make 70 points, 70 > 60 so 4 is enough allies to defeat the bad guy at his plan. if the bad guy sets up a trap, and the 4 allier fall for it, they will only have 50 points and lose. if good players do research and learn that bad player has trap, then if the good player scollect that info, then they dont have to set an *intercept*, they can play out the counter trap and send through the arm, so the bad know they are sending enough, but the bad buy think his trap will be enough to win the day, but the bad guy doenst know that the good guys knw about trap and have a plan to get around it. so the bbad guys do 70 > 60 allies win over the bad guys. keep going back with the is style of logic, where the players rely on info in the game to win mechanics in the end game
+
+
+  ☐ base tasks for everyone to do is group together and go on missions, bad players willw ant the mission to fail, good players will want it to succeed
+  ☐ people can witness things and have information
+
+
+      

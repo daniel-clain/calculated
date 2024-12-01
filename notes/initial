@@ -1,0 +1,33 @@
+- final scenario
+  - if square
+    - 5 blue points
+    - 2 red points
+  - if cirlce
+    - 2 green points
+    - 4 red points
+  - if triangle
+    - 2 blue points
+    - 3 green points
+- players
+  p1: wants red points, has triangle
+  p2: wants green points has circle
+  p3: wants green points has square
+- logic,
+  if p3 wants green points, their square will not help them
+
+# game features
+
+- player has an action card for what they do in the final stage, eg p2 has action play green circle, and then when the final algorithm plays out, circle will be present so 2 green points will be added
+- players have cards that represent information about them,
+
+- player options
+  - get theif for chance to steal item, can be detected
+  - get spy for chance to observe action or learn information, can be detected
+    ~ eg given theif direction to steal item from player
+  - offer to sell to buy or sell item or information
+  - hide information, action or item, chance to protect from spy or theif
+  - action to provide item to algorithm
+
+# ui
+
+- shows details of final event

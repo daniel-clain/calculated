@@ -1,0 +1,28 @@
+.challenge-container {
+  display: flex;
+  gap: 20px;
+  justify-content: flex-start;
+  flex-wrap: wrap;
+  background-color: grey;
+  padding: 20px;
+}
+.challenge {
+  border: 1px solid black;
+  border-radius: 20%;
+  padding: 10px;
+  background-color: white;
+}
+
+.color-circle {
+  border-radius: 100%;
+  width: 20px;
+  height: 20px;
+}
+
+.color-container {
+  align-items: "center";
+  justify-content: flex-start;
+  gap: 20px;
+  display: flex;
+  padding: 10px;
+}
