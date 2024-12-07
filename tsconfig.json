@@ -14,7 +14,11 @@
     "resolveJsonModule": true,
     "isolatedModules": true,
     "noEmit": true,
-    "jsx": "react-jsx"
+    "jsx": "react-jsx",
+    "typeRoots": [
+      "node_modules/@types", // Default location for types
+      "src/shared/types/index.d.ts" // Your custom types folder
+    ]
   },
-  "include": ["./src/frontend", "./src/shared", "src/index.tsx"]
+  "include": ["./src/frontend/", "./src/shared/types/", "src/index.tsx"]
 }

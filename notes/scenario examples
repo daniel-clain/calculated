@@ -1,0 +1,184 @@
+- game has list of mechanical truths,
+
+  - dark clouds come before rain
+  - a character has 1 suffereing for each point of wetness
+
+- game has list of information
+
+  - the shop sells umbrellas
+  - dark clouds come before rain
+
+- game start
+
+  - add timed event, at 120000 seconds, do final algorithm
+  - ## all players get information about the final algorithm
+  - all players get information: dark clouds come before rain
+  - random player gets info: the shop sells umbrellas
+
+  - loop game timer
+  - onTimerTick
+    ~ sky.clouds.reduceTimeUntilRain
+    ~ if(player.isUnder(clouds.raining)) player.increaseWetness(cloud.rainAmount)
+
+- shop, has umbrella
+
+  - protects against rain
+  - costs: 80
+
+- game state
+
+  - weather: dark clouds
+  - players: [{
+    number: 1,
+    alignment: good,
+    money: 500,
+    wetness: 0,
+    hasUmbrella: false,
+    getHitByWet:(ammount){
+    if(this.hasUmbrella) return
+    if(this.wetness == maxWetness) return
+    this.wetness = this.wetness + ammount > maxWetness ? maxWetness : this.wetness + ammount
+    }
+    ]
+  - sky: {
+    clouds: [{
+    currentLocation: Location
+    isDarkCloud: true,
+    timeUntilRain: 400
+    isRaining: false,
+    rainPerSecond: 0
+    timeUntilFinished: 0
+    timeUntilHeavierRain: 0
+    schedule: [
+    cloudForm().timeTillFinish(5),
+
+    cloudForm().timeTillDark(10).timeTillCloud(10).timeTillFinish(5),
+    cloudForm().timeTillDark(10).timeTillRain(10).timeTillDark().timeTillCloud(5).timeTillFinish(5),
+    cloudForm().timeTillDark(10).timeTillRain(5).tieTillHeavyRain(20).timeTillRain(10).timeTillDark(5).timeTillCloud().timeTillFinish(5),
+    ]
+
+    subscibeToWorldTime.onTimeTick(()=>{
+    if(timeUntilRain){
+    timeUntilRain --
+    }
+    if(this.isRaining){
+
+        }
+
+    })
+    this.rainPerSecond = 1
+    this.timeUntilHeavierRain = 500
+
+    onHeavyRainTimerExpired(() => {
+    this.rainPerSecond = 2,
+    this.timeUntilFinished = 5
+
+    })
+
+    }]
+    }
+
+- logical algorithms that play off in the world on a second-by-second basis
+
+  - subscibeToWorldTime.onTimeTick(()=>{
+    ~ forEachLocation,
+    - logical algorithms relative to the state of that tile in that moment
+      - if(location.cloud?.isRaining){
+        location.things.forEach(thing => {
+        if(thing isInstanceOf Person){
+        person.getHitByWet(location.cloud.rainPerSecond)
+        }
+        })
+        }
+
+  })
+
+- player behavior options
+
+  - buy item from shop
+
+- player properties
+
+  - money: 1000
+
+- final algorithm
+
+  - game has 1 suffereing for each point of dryness lost
+  - players get points based on their point calculation algorithm
+    ~ where
+
+    - evil players get points for the suffering they caused directly and the global suffereing, minus their own suffereing and the ones they love suffering
+    - good players get points for the suffereing that would have occured that they eliviated and all suffereing eliviated in the world
+    - the bad guys get a stronger weighting towards suffering they have inflicted, and negative weighting for collective suffereing. and good players will get a lesser weighting towards suffering they relieve, and get a stronger weighting for collective suffering they releive. leading to good players getting more from selflessly working together, where as bad guys are more greedy and selfish, and bad guys are likely to try and userp the maind bad guy,
+    - the mechanics will still be that bad guys lose points for their own suffereing and will not contribue to the points they gain from global suffering
+
+  - more mechanics
+    - when a good guy has information that would mechanically cause less suffering, he gets a passive debuf where he personally suffers the longer he doesnt do the right thing,
+
+* possible scenarios when game is played out
+
+  - if a good player gets the info that the umbrella is for sale
+    ~ they tell all other players and they all get the info
+    ~ all players use the shop to buy and umbrella
+    ~ when it rains none of the players get wet
+    ~ all the good players gained points because the sufferieng that would have been caused by the rain didnt happend so point for suffereing being averted in the world
+    ~ the good player who reported the information to others gained points for sharning information that led to less suffering, so they get the same as the other good players plus more
+    ~ the evil players dont gain points because suffereing in the world didnt occur
+    ~ so lets say the game had 5 players 3 good 2 evil, at this point, none of the players have their umbrella up, and they dont have any plans to put their umbrella up if it starts to rain, and so currently, if the final algorithm will produce an amount of suffereing equal to the result of the algorithm
+
+    - 5 players on location, clouds rains for 5 seconds doing 0.4 amount of rain per second, players get hit by wet, and they dont have an umbrella so they each gain a total of 2 wetness. each player now has a wetness rating of 2. so 2 wetness times 5 players = 10 global suffereing
+    - when the final algorithm runs
+      - all the good players will lost 10 points and be on -10, all the evil players will gain points for totall sufferieng minus their own contributing, so each evil player get points based on 4 other players suffering times by 2 for wetness level which is a total of 8 points for each evil player
+      - the 2 evil players will both come first as a draw with 8 points each, and the good players will draw coming 2nd or last with a score of -10 each
+
+  - in a scenario where 1 of the good players had information about the umbrella being available at the shop, the players can buy the umbrella and use it before it rains, and get no wetness
+    ~ the game had a default state of creating 10 suffering, but every player using an umbrella means that that 10 suffering has been eliviated
+    ~ so each good player gets 10 points for eliviated suffering
+    ~ evil players get 0 points for no suffering caused
+    - an evil player wouldnt not buy and umbrella just to cause his own suffering because an evil player doesnt get global suffereing point contributed by their own suffering
+      ~ the good player that reported it gains points because their action was mechanically establishes that good player as the source, and they earn points relative to the suffering they eliviate
+      ~ so when the final algorithm runs the final points will be
+    - good player that delivered the message gets points for the suffering they eliviated, so 10
+    - good players get points for global suffereing eliviate, so 10 each
+    - bad players get points for suffereing they caused and global suffereing so they get 0 points
+    - so total score is, first is player that gave info to other players that the umbrella was sold in the shop has a total of 20 points, the 2 other good players had a total of 10 points each, and the 2 evil players had a total score of 0 points each
+  - in a scenario where one of the evil players gets the info that there is a shop that sells umbrellas, the evil player knows that he wants to cause more suffereing, so he wont tell anyone that there is a show that sells umbrellas
+    ~ evil player wont even tell other evil players because they would get an umbrella, and then the discovering evil player will get 5 less points for direct suffering caused and global suffereing points
+    ~ so when the final algorithm runs the final points will be
+    - the evil player with the info get 8 global suffereing and 8 suffering caused, total of 16 points for suffering
+    - other evil players get 6 points each, where they dont get points for their suffereing, nor the evil player with the info because they didnt suffer because they didnt get wet
+    - all the good players get -8. because 4 players that suffered times by 2 points of suffering each equal 8
+    - so evil palyer with info 16, other evil player 8, 3 good players -8
+
+* the game has a meta game ladder, where points of each round are added, to a tally, and first player go over 100 points, means the last round. after the last round,the new total points is tallyed. and whoever has the most points after the last round points have been added, is the winner of the game
+
+* above notes are the core part of the game in detail, and here are some extra mechanical features without details that can hook into that core system
+
+  - hire a spy to find out information
+    ~ if spy is in the location, they record the state and state changes over time while theyre theyre, if actions take place while the psy is in the location, the the details of the action are recorded
+    - example of an action recorded, at 627 time step, player 2 gave information to target player 3 where the info is "the shop sells umbrellas".
+    - when the player has the spy come back with that info, then the player can go to the shop and buy an umbrella an eliviate their own suffereing
+      ~ if spy in a location and sees a character, then the spy will come back and give info to the player, the info will be the state of the other characcter, where the were, what were they doing, what items did they have
+    - in this scenrio, the character didnt perform any actions, but the player can see that in the characters items list.
+    - this means the player will think, where did they buy that umbrella, there must be a source. they can use this logic to deduce there is a shop that sells umbrellas
+  - hire a thief, steal a players item
+    - an evil player may want to steal another players umbrell, they mitigate the points lost from their own suffering, and their action directly caused suffereing, and global suffering
+  - characters value different things
+
+    - if they value money, they get points for the joy they get from having money and gaining money
+    - if they value causing suffering, they get points for the suggering they cause and the suffeing that globally occurs
+    - if they value family they get points for their own family joy and lose it for their suffering
+
+  - evil player get extra points for revenge
+    ~ adds to evil acts points
+    ~ to whoever casued you suffereing, you cause them suffereing for bonus points
+  - good players get points for justice
+    ~ adds to good acts points
+    ~ giving bad act a trial with a porportionate punishment
+
+  - in terms of good evil alignemnt for characters, the details of it are:
+    ~ characters have a true self perception
+    ~ characters have perception of othe characters that arent necessarily true
+    ~ a group can have a generally accepted view
+  - when player does an act, the player will know the truthe about their alignment, but other plaeyrs will only know it if it is witnessed, therefore some evil acts can be taken in private, and if nobody perceives them, then nobody can hae that info of the truth.
+    ~ a player can promote the character they want people to see them as, however this is counted as info give, and a player can decive wheather they conside that information is a belief

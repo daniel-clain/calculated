@@ -1,0 +1,10 @@
+- have record of
+
+  - suffereing of each player
+  - global suffeing is total of suffereing of each player
+
+- at any point you can get the state at the time of the final event and derive final points for each player
+  - first step is to generate an instance of game that will be the stat at end time
+    ~ this will include processing all the planned plans and actions
+  - for each character, calculate the level of suffereing theyve felt over teh game, as well as suffereing that they are directly responsible for
+  - last is to calculate points relative to each players values vs the total suffereing caused

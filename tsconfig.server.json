@@ -5,7 +5,11 @@
     "module": "commonjs",
     "target": "es6",
     "strict": true,
-    "esModuleInterop": true
+    "esModuleInterop": true,
+    "typeRoots": [
+      "node_modules/@types", // Default location for types
+      "src/shared/types/"
+    ]
   },
   "include": ["./src/backend/server.ts", "./src/shared/**/*"],
   "exclude": ["./src/frontend"]

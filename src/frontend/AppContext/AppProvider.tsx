@@ -2,28 +2,25 @@ import { createContext, Dispatch, ReactNode } from "react"
 import { GameState } from "../../backend/Game/game"
 import { HostState } from "../../backend/Host/host"
 import {
-  GetServerFunctionArgs,
+  ClientToServerEventNames,
   MessagesToServer,
-  ServerFunctionNames,
 } from "../../shared/types/message-to-server"
 import { useAppService } from "./useAppService"
-
-export interface SendCallback {
-  <Name extends ServerFunctionNames>(
-    name: Name,
-    args: GetServerFunctionArgs<Name>
-  ): void
-}
+import { GameSocketClient } from "./useWebsockets"
 
 /* type here seems redundant, is there a way to derive it? */
 export type ContextProps = {
+  thisClientId: number
   localName?: string
   connected: boolean
   setLocalName: Dispatch<string>
-  thisClientId: number
-  hostState?: HostState
+  hostState: HostState
   gameState?: GameState
-  send: <T extends ServerFunctionNames>(message: MessagesToServer<T>) => void
+  send: <T extends ClientToServerEventNames>(
+    message: MessagesToServer<T>
+  ) => void
+  connectToWebsocketServer: () => GameSocketClient
+  isInAGameLobby: () => boolean
 }
 
 export const AppContext = createContext<ContextProps>({} as ContextProps)
@@ -37,6 +34,8 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
     gameState,
     connected,
     send,
+    connectToWebsocketServer,
+    isInAGameLobby,
   } = useAppService()
 
   const contextValue: ContextProps = {
@@ -47,6 +46,8 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
     gameState,
     connected,
     send,
+    connectToWebsocketServer,
+    isInAGameLobby,
   }
 
   return (

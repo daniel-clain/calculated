@@ -1,27 +1,29 @@
 import { useContext, useState } from "react"
 import { AppContext } from "../AppContext/AppProvider"
-import { ActiveGamesList_C } from "./components/ActiveGamesList"
 import { ConnectedClientsList } from "./components/ConnectedClientsList"
 import { GameLobbyList_C } from "./components/GameLobbyList"
 
 export function Host_C() {
-  const { setLocalName, localName, send } = useContext(AppContext)
+  const { setLocalName, localName, send, isInAGameLobby, hostState } =
+    useContext(AppContext)
 
   const [inputName, setInputName] = useState<string>()
 
   if (localName) {
     return (
       <div>
+        <h3>Hello {localName}</h3>
+        <hr />
         <ConnectedClientsList />
-        <GameLobbyList_C />
-        <ActiveGamesList_C />
         <button
+          disabled={isInAGameLobby()}
           onClick={() => {
             send({ name: "createGameLobby" })
           }}
         >
           Create Lobby
         </button>
+        <GameLobbyList_C />
       </div>
     )
   } else {

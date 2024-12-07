@@ -1,9 +1,9 @@
 import EventEmitter from "events"
 
-const gameTimeStepIncrement = 10
+const gameTimeStepIncrement = 100
 
 export class Timer extends EventEmitter {
-  private _timeStep = 0
+  private _timeStep = 0 /* in miliseconds */
   private intervalRef: NodeJS.Timeout | undefined
   private _paused = true
 
@@ -16,7 +16,7 @@ export class Timer extends EventEmitter {
   get timeStep() {
     return this._timeStep
   }
-  set timeStep(val: typeof this._timeStep) {
+  set timeStep(val: number) {
     this._timeStep = val
     this.emit("timeStep updated")
   }
@@ -39,5 +39,10 @@ export class Timer extends EventEmitter {
     } else {
       this.start()
     }
+  }
+
+  stop() {
+    clearInterval(this.intervalRef)
+    this.timeStep = 0
   }
 }

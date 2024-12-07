@@ -1,7 +1,8 @@
-import { Socket } from "socket.io"
+/* import { Socket } from "socket.io"
 import { GameLobby } from "../../shared/types/game-lobby"
-import { Game } from "../Game/game"
+import { Game, GameState } from "../Game/game"
 import { PlayerInfo } from "../Game/player/player"
+import { gameScenariosList } from "../Game/scenarios/scenario"
 import { ConnectedClient } from "./client"
 import { Host } from "./host"
 
@@ -33,6 +34,26 @@ export function handleSocketMessages({
     host.emitHostStateToClients()
   }
 
+  function cancelLobby({ lobbyId }: { lobbyId: number }) {
+    host.gameLobbies = host.gameLobbies.filter((gameLobby) => {
+      return gameLobby.gameLobbyId != lobbyId
+    })
+    host.emitHostStateToClients()
+  }
+
+  function leaveLobby({ lobbyId }: { lobbyId: number }) {
+    const client = getClientBySocket()
+    host.gameLobbies.forEach((gameLobby) => {
+      if (gameLobby.gameLobbyId == lobbyId) {
+        gameLobby.playersJoined = gameLobby.playersJoined.filter(
+          (player) => player.id != client.id
+        )
+      }
+      return gameLobby
+    })
+    host.emitHostStateToClients()
+  }
+
   function startGame() {
     const gameLobby = getGameLobbyBySocket()
     console.log("start game ", gameLobby.creator.name)
@@ -46,7 +67,21 @@ export function handleSocketMessages({
       id,
     }))
 
-    const game = new Game(playersInfo, host.emitGameUpdateToClients.bind(host))
+    const gameScenarios = gameScenariosList
+    const umbrellaGame = gameScenarios.find(
+      (scenario) => scenario.name == "Rain Umbrella Scenario"
+    )
+
+    const handleGameUpdate = host.emitGameUpdateToClients.bind(host)
+
+    const test = (gameState: GameState) => {
+      console.log("doink", gameState)
+      handleGameUpdate(gameState)
+    }
+
+    const game =
+      umbrellaGame?.createGame(playersInfo, handleGameUpdate) ??
+      new Game(playersInfo, test)
     host.activeGames.push(game)
     console.log("game started")
     host.gameLobbies = host.gameLobbies.filter(
@@ -67,10 +102,12 @@ export function handleSocketMessages({
   }
 
   return {
-    startGame,
-    setReady,
     createGameLobby,
     joinGameLobby,
+    setReady,
+    startGame,
+    leaveLobby,
+    cancelLobby,
   }
 
   function getClientBySocket(): ConnectedClient {
@@ -108,3 +145,4 @@ export function handleSocketDisconnect({
     })
   })
 }
+ */

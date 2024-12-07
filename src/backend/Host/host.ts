@@ -1,7 +1,13 @@
-import { Server, Socket } from "socket.io"
-import { GameLobby } from "../../shared/types/game-lobby"
-import { Game, GameInfo, GameState } from "../Game/game"
-import { ConnectedClient, PendingClient } from "./client"
+import { Server as HTTPServer } from "http"
+import { Socket, Server as WebsocketServer } from "socket.io"
+import {} from "../../frontend/AppContext/useWebsockets"
+import {
+  ClientToServerEvents,
+  ServerToClientEvents,
+} from "../../shared/types/message-to-server"
+import { GameState } from "../Game/game"
+import { ConnectedClient } from "./connected-client"
+import { GameLobby, GameLobbyInfo } from "./game-lobby"
 
 export type ClientInfo = {
   id: number
@@ -11,82 +17,85 @@ export type ClientInfo = {
 
 export type HostState = {
   connectedClients: ClientInfo[]
-  activeGames: GameInfo[]
-  gameLobbies: GameLobby[]
+  gameLobbies: GameLobbyInfo[]
 }
 
 console.log("-- host")
+// Allow connections from your React app
+const portThatReactStartRunsOn = 3000
+
+export type GameSocket = Socket<
+  ClientToServerEvents,
+  ServerToClientEvents,
+  {},
+  ClientInfo
+>
+
 export class Host {
-  pendingClients: PendingClient[] = []
+  websocketServer: WebsocketServer<
+    ClientToServerEvents,
+    ServerToClientEvents,
+    {},
+    ClientInfo
+  >
+
   connectedClients: ConnectedClient[] = []
-  activeGames: Game[] = []
   gameLobbies: GameLobby[] = []
 
-  constructor(public websocketServer: Server) {
-    websocketServer.on("connection", this.handleNewSocketConnection.bind(this))
-  }
-  handleNewSocketConnection(socket: Socket) {
-    const pendingClient = new PendingClient(this, socket)
-    this.pendingClients.push(pendingClient)
-  }
-
-  registerClient(id: number, name: string, socket: Socket) {
-    this.pendingClients = this.pendingClients.filter(
-      (client) => client.socket.id !== socket.id
-    )
-
-    const existingClient = this.connectedClients.find((p) => p.id == id)
-
-    if (existingClient) {
-      console.log(`${existingClient.name} has reconnected`)
-
-      existingClient.name = name
-      existingClient.socket = socket
-      existingClient.connected = true
-
-      const existingGame = this.activeGames.find((g) =>
-        g.players.find((player) => player.id == id)
-      )
-      if (existingGame) {
-        existingGame.handlePlayerReconnected(existingClient.id)
+  constructor(public server: HTTPServer) {
+    this.websocketServer = new WebsocketServer<
+      ClientToServerEvents,
+      ServerToClientEvents,
+      {},
+      ClientInfo
+    >(server, {
+      cors: {
+        origin: `http://localhost:${portThatReactStartRunsOn}`,
+        methods: ["GET", "POST"],
+        credentials: true,
+      },
+    })
+    this.websocketServer.on("connection", (socket: Socket) => {
+      const { id, name } = socket.handshake.query
+      const clientInfo: ClientInfo = {
+        id: Number(id),
+        name: name as string,
       }
-    } else {
-      console.log(`${name} has connected`)
 
-      const connectedClient = new ConnectedClient(this, id, name, socket)
-      this.connectedClients.push(connectedClient)
-    }
-
-    this.emitHostStateToClients()
+      const existingClient = this.connectedClients.find(
+        (client) => client.id == clientInfo.id
+      )
+      if (existingClient) {
+        console.log(`** ${name} has reconnected`)
+        existingClient.socket = socket
+      } else {
+        console.log(`** ${name} has connected`)
+        new ConnectedClient({ host: this, socket, ...clientInfo })
+      }
+      console.log(
+        `Connected Clients [${this.connectedClients.map(({ name }) => name)}]`
+      )
+      this.emitHostState()
+    })
+  }
+  emitHostState() {
+    console.log("emitHostState")
+    this.websocketServer.emit("hostStateUpdate", this.getHostState())
   }
 
-  emitGameUpdateToClients(gameState: GameState) {
-    const clients = gameState.players.map(
-      (player) => this.connectedClients.find((c) => c.id === player.id)!
-    )
-    clients.forEach((client) => client.socket.emit("GameState", gameState))
-  }
-
-  emitHostStateToClients() {
-    this.websocketServer.emit("HostState", this.getHostState())
+  emitGameState(gameState: GameState) {
+    console.log("emitGameState")
+    this.websocketServer.emit("gameStateUpdate", gameState)
   }
 
   getHostState(): HostState {
     return {
-      activeGames: this.activeGames.map(
-        ({ gameId, players, timer, finalEvent }) => ({
-          gameId,
-          players: players.map(({ name, id }) => ({ name, id })),
-          currentTime: timer.timeStep,
-          timeUntilEnd: finalEvent.activationTime - timer.timeStep,
-        })
-      ),
       connectedClients: this.connectedClients.map(({ id, name, ready }) => ({
         id,
         name,
         ready,
       })),
-      gameLobbies: this.gameLobbies,
+      gameLobbies: this.gameLobbies.map((lobby) => lobby.gameLobbyInfo),
     }
   }
 }

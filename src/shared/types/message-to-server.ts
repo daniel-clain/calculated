@@ -1,26 +1,38 @@
-import { handleSocketMessages } from "../../backend/Host/socket-events"
-export type ServerFunctions = ReturnType<typeof handleSocketMessages>
+import { handleClientToServerEvents } from "../../backend/Host/connected-client"
+import { handleServerToClient } from "../../frontend/AppContext/useWebsockets"
 
-export type ServerFunctionNames = keyof ServerFunctions
+export type ClientToServerEvents = ReturnType<typeof handleClientToServerEvents>
+export type ClientToServerEventNames = keyof ClientToServerEvents
 
-export type GetServerFunctionArgs<Name extends ServerFunctionNames> =
-  Parameters<ServerFunctions[Name]>[0]
+export type GetClientToServerEventArgs<Name extends ClientToServerEventNames> =
+  Parameters<ClientToServerEvents[Name]>[0]
 
-export type MessagesToServer<Name extends ServerFunctionNames> = {
+export type MessagesToServer<Name extends ClientToServerEventNames> = {
   name: Name
-  args?: GetServerFunctionArgs<Name>
+  args?: GetClientToServerEventArgs<Name>
 }
-const startGameMessage: MessagesToServer<"startGame"> = {
+const startGameMessageArgs: MessagesToServer<ClientToServerEventNames> = {
   name: "startGame",
   args: undefined,
 }
 
-const setInForNextGameMessage: MessagesToServer<"setReady"> = {
-  name: "setReady",
-  args: { isIn: true },
-}
-
-const message: MessagesToServer<ServerFunctionNames> = {
+const message: MessagesToServer<ClientToServerEventNames> = {
   name: "joinGameLobby",
   args: undefined,
 }
+
+export type ServerToClientEvents = ReturnType<typeof handleServerToClient>
+
+/* 
+export interface ClientToServerEvents {
+  createGameLobby: () => void
+  joinGameLobby: (roomId: string) => void
+  leaveGameLobby: (message: string) => void
+  closeGameLobby: (message: string) => void
+  startGame: (message: string) => void
+}
+
+export interface ServerToClientEvents {
+  hostStateUpdated: (hostState: HostState) => void
+  gameStateUpdated: (gameState: GameState) => void
+} */

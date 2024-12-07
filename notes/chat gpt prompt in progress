@@ -1,0 +1,8 @@
+now i want to separate the idea of a game interface, and then i want to have a list of scenarios that i create and extent the base game structure and have the context of a particular scenaio in scope. where i clearly separate the difference between the base game and the certain scenario currently chosen.
+the bas game should have common things. each game has a final even, common things in the final event are, good guys get points based on the suffereing they directly eliviated and global suffereing eliviated, and bad guys should get points relatie to the suffering they created directly, and the global suffering had mins themselves.
+the thing thats different in each game is, a game can have preset things thatwill cause suffering.
+the game interface and superclass logic should always be that the game finishes and suffereing is caluculated and be able to run that algorithm without needing to know the details of the scenario instance.
+in this example scenario, the scenario create the concept of clouds raining in a location, the mechanic of if a player is in a location thats raining then they will get wet, the mechanic of, each second a player is wet, their total suffereing for taht second in time is relative to how wet they are in that second in time. a player can receive info that there is a shop that sells umbrella, when they learn it they get an action option to buy and umrella.
+none of these things exist without taht particular scenario.
+
+what is the best way to design the code separately from the scenario. 
